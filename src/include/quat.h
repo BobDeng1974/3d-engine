@@ -7,22 +7,22 @@
 
 class Quat {
 public:
-	Quat();
-	Quat(const Quat& q);
-	Quat(float x, float y, float z, float w);
-	Quat(const RotAxis& rotaxis);
-	Quat(const Vector3& euler);
+	Quat() : x(0), y(0), z(0), w(0) {}
+	Quat(const Quat& q) : x(q.X()), y(q.Y()), z(q.Z()), w(q.W()) {}
+	Quat(float x, float y, float z, float w) : x(x), y(y), z(z), w(w) {}
+	Quat(const RotAxis& rotaxis) : x(rotaxis.Axis().X() * sin(rotaxis.Angle() / 2.f)), y(rotaxis.Axis().Y() * sin(rotaxis.Angle() / 2.f)), z(rotaxis.Axis().Z() * sin(rotaxis.Angle() / 2.f)), w(cos(rotaxis.Angle() / 2.f)) {}
+	Quat(const Vector3& euler): x(euler.X()), y(euler.Y()), z(euler.Z()), w(0) {}
 
-	bool operator==(const Quat& other) const;
-	Quat& operator=(const Quat& other);
-	Quat operator+(const Quat& other) const;
-	Quat operator*(const Quat& other) const;
-	Vector3 operator*(const Vector3& vec) const;
-	Quat operator*(float scale) const;
-	Quat operator/(float scale) const;
+	bool operator==(const Quat& other) const { return x == other.X() && y == other.Y() && z == other.Z() && w == other.W(); }
+	Quat& operator=(const Quat& other) { x = other.X(); y = other.Y(); z = other.Z(); w = other.W(); return *this; }
+	Quat operator+(const Quat& other) const { return Quat( x + other.X(), y + other.Y(), z + other.Z(), w + other.W() ); }
+	Quat operator*(const Quat& other) const { return Quat( w * other.X() + x * other.W() + y * other.Z() - z * other.Y(), w * other.Y() + y * other.W() + z * other.X() - x * other.Z(), w * other.Z() + z * other.W() + x * other.Y() - y * other.X(), w * other.W() - x * other.X() - y * other.Y() - z * other.Z() ); }
+	Vector3 operator*(const Vector3& vec) const { return Vector3( vec.X() * x + vec.X() * y + vec.X() * z + vec.X() * w, vec.Y() * x + vec.Y() * y + vec.Y() * z + vec.Y() * w,  vec.Z() * x + vec.Z() * y + vec.Z() * z + vec.Z() * w ); }
+	Quat operator*(float scale) const { return Quat( x * scale, y * scale, z * scale, w * scale ); }
+	Quat operator/(float scale) const { return Quat( x / scale, y / scale, z / scale, w / scale ); }
 
 	Quat Normalized() const;
-	Quat Conjugate() const;
+	Quat Conjugate() const { return Quat( -x, -y, -z, w ); }
 
 	RotAxis Axis() const;
 	void SetAxis(const RotAxis& rotaxis);
@@ -33,16 +33,16 @@ public:
 	Quat Lerp(const Quat& other, float t) const { return (*this*(1-t) + other*t).Normalized(); }
 	Quat Slerp(const Quat& other, float t) const;
 
-	float Dot(const Quat& other) const;
+	float Dot(const Quat& other) const { return x * other.X() + y * other.Y() + z * other.Z() + w * other.W(); }
 
-	const float& X() const;
-	const float& Y() const;
-	const float& Z() const;
-	const float& W() const;
-	void SetX(float x);
-	void SetY(float y);
-	void SetZ(float z);
-	void SetW(float w);
+	const float& X() const { return x; }
+	const float& Y() const { return y; }
+	const float& Z() const { return z; }
+	const float& W() const { return w; }
+	void SetX(float x) { this->x = x; }
+	void SetY(float y) { this->y = y; }
+	void SetZ(float z) { this->z = z; }
+	void SetW(float w) { this->w = w; }
 private:
 	float x, y, z, w;
 };

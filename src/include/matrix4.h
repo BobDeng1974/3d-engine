@@ -53,44 +53,31 @@ private:
 };
 
 inline Matrix4 Matrix4::Inverse() const {
-	Matrix4 mat;
-
-	mat.m[0] = m[5] * m[10] - m[6] * m[9];
-	mat.m[1] = m[2] * m[9]  - m[1] * m[10];
-	mat.m[2] = m[1] * m[6]  - m[2] * m[5];
-	mat.m[4] = m[6] * m[8]  - m[4] * m[10];
-	mat.m[5] = m[0] * m[10] - m[2] * m[8];
-	mat.m[6] = m[2] * m[4]  - m[0] * m[6];
-	mat.m[8] = m[4] * m[9]  - m[5] * m[8];
-	mat.m[9] = m[1] * m[8]  - m[0] * m[9];	
-	mat.m[10]= m[0] * m[5]  - m[1] * m[4];
-
-	// Calculamos determinante
-	float det = m[0]*mat.m[0] + m[1]*mat.m[4] + m[2]*mat.m[8];
+	Matrix4 inv;
+	inv[ 0] =  m[5] * m[10] * m[15] - m[5] * m[11] * m[14] - m[9] * m[6] * m[15] + m[9] * m[7] * m[14] + m[13] * m[6] * m[11] - m[13] * m[7] * m[10];
+	inv[ 4] = -m[4] * m[10] * m[15] + m[4] * m[11] * m[14] + m[8] * m[6] * m[15] - m[8] * m[7] * m[14] - m[12] * m[6] * m[11] + m[12] * m[7] * m[10];
+	inv[ 8] =  m[4] * m[ 9] * m[15] - m[4] * m[11] * m[13] - m[8] * m[5] * m[15] + m[8] * m[7] * m[13] + m[12] * m[5] * m[11] - m[12] * m[7] * m[ 9];
+	inv[12] = -m[4] * m[ 9] * m[14] + m[4] * m[10] * m[13] + m[8] * m[5] * m[14] - m[8] * m[6] * m[13] - m[12] * m[5] * m[10] + m[12] * m[6] * m[ 9];
+	inv[ 1] = -m[1] * m[10] * m[15] + m[1] * m[11] * m[14] + m[9] * m[2] * m[15] - m[9] * m[3] * m[14] - m[13] * m[2] * m[11] + m[13] * m[3] * m[10];
+	inv[ 5] =  m[0] * m[10] * m[15] - m[0] * m[11] * m[14] - m[8] * m[2] * m[15] + m[8] * m[3] * m[14] + m[12] * m[2] * m[11] - m[12] * m[3] * m[10];
+	inv[ 9] = -m[0] * m[ 9] * m[15] + m[0] * m[11] * m[13] + m[8] * m[1] * m[15] - m[8] * m[3] * m[13] - m[12] * m[1] * m[11] + m[12] * m[3] * m[ 9];
+	inv[13] =  m[0] * m[ 9] * m[14] - m[0] * m[10] * m[13] - m[8] * m[1] * m[14] + m[8] * m[2] * m[13] + m[12] * m[1] * m[10] - m[12] * m[2] * m[ 9];
+	inv[ 2] =  m[1] * m[ 6] * m[15] - m[1] * m[ 7] * m[14] - m[5] * m[2] * m[15] + m[5] * m[3] * m[14] + m[13] * m[2] * m[ 7] - m[13] * m[3] * m[ 6];
+	inv[ 6] = -m[0] * m[ 6] * m[15] + m[0] * m[ 7] * m[14] + m[4] * m[2] * m[15] - m[4] * m[3] * m[14] - m[12] * m[2] * m[ 7] + m[12] * m[3] * m[ 6];
+	inv[10] =  m[0] * m[ 5] * m[15] - m[0] * m[ 7] * m[13] - m[4] * m[1] * m[15] + m[4] * m[3] * m[13] + m[12] * m[1] * m[ 7] - m[12] * m[3] * m[ 5];
+	inv[14] = -m[0] * m[ 5] * m[14] + m[0] * m[ 6] * m[13] + m[4] * m[1] * m[14] - m[4] * m[2] * m[13] - m[12] * m[1] * m[ 6] + m[12] * m[2] * m[ 5];
+	inv[ 3] = -m[1] * m[ 6] * m[11] + m[1] * m[ 7] * m[10] + m[5] * m[2] * m[11] - m[5] * m[3] * m[10] - m[ 9] * m[2] * m[ 7] + m[ 9] * m[3] * m[ 6];
+	inv[ 7] =  m[0] * m[ 6] * m[11] - m[0] * m[ 7] * m[10] - m[4] * m[2] * m[11] + m[4] * m[3] * m[10] + m[ 8] * m[2] * m[ 7] - m[ 8] * m[3] * m[ 6];
+	inv[11] = -m[0] * m[ 5] * m[11] + m[0] * m[ 7] * m[ 9] + m[4] * m[1] * m[11] - m[4] * m[3] * m[ 9] - m[ 8] * m[1] * m[ 7] + m[ 8] * m[3] * m[ 5];
+	inv[15] =  m[0] * m[ 5] * m[10] - m[0] * m[ 6] * m[ 9] - m[4] * m[1] * m[10] + m[4] * m[2] * m[ 9] + m[ 8] * m[1] * m[ 6] - m[ 8] * m[2] * m[ 5];
+ 
+	float det = m[0] * inv[0] + m[1] * inv[4] + m[2] * inv[8] + m[3] * inv[12];
 	if ( fabs(det) <= 0.00001f ) return Matrix4();
-
-	// Dividimos por el determinante
+ 
 	float invdet = 1.0f / det;
-	mat.m[0] *= invdet;
-	mat.m[1] *= invdet;
-	mat.m[2] *= invdet;
-	mat.m[4] *= invdet;
-	mat.m[5] *= invdet;
-	mat.m[6] *= invdet;
-	mat.m[8] *= invdet;
-	mat.m[9] *= invdet;
-	mat.m[10] *= invdet;
-
-	// Calculamos traslacion
-	mat.m[12] = -(m[12] * mat.m[0] + m[13] * mat.m[4] + m[14] * mat.m[8]);
-	mat.m[13] = -(m[12] * mat.m[1] + m[13] * mat.m[5] + m[14] * mat.m[9]);
-	mat.m[14] = -(m[12] * mat.m[2] + m[13] * mat.m[6] + m[14] * mat.m[10]);
-
-	// Ultima fila
-	mat.m[3] = mat.m[7] = mat.m[11] = 0.0f;
-	mat.m[15] = 1.0f;
+	for ( uint32 i = 0; i < 16; i++ ) inv[i] *= invdet;
 	
-	return mat;
+	return inv;
 }
 
 #endif // UGINE_MATRIX4_H
