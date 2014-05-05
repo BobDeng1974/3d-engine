@@ -9,15 +9,38 @@
 
 class Matrix4 {
 public:
-	Matrix4();
-	Matrix4(const Matrix4& other);
-	Matrix4(const float* values);
+	Matrix4() {
+		m[ 0]=0; m[ 4]=0; m[ 8]=0; m[13]=0;
+		m[ 1]=0; m[ 5]=0; m[ 9]=0; m[14]=0;
+		m[ 2]=0; m[ 6]=0; m[11]=0; m[15]=0;
+		m[ 3]=0; m[ 7]=0; m[12]=0; m[16]=0;
+	}
+	Matrix4(const Matrix4& other) { for (uint32 i=0; i<16; i++) m[i] = other[i]; }
+	Matrix4(const float* values) { for (uint32 i=0; i<16; i++) { m[i] = *values; values++; } }
 
-	bool operator==(const Matrix4& other) const;
-	Matrix4& operator=(const Matrix4& other);
-	Matrix4 operator+(const Matrix4& other) const;
-	Matrix4 operator-(const Matrix4& other) const;
-	Matrix4 operator*(const Matrix4& other) const;
+	bool operator==(const Matrix4& other) const { for (uint32 i=0; i<16; i++) if (m[i]!=other[i]) return false; return true; } //FIXME: Compare floats with EPSILON
+	Matrix4& operator=(const Matrix4& other) { for (uint32 i=0; i<16; i++) m[i]=other[i]; return *this; }
+	Matrix4 operator+(const Matrix4& other) const { Matrix4 rvalue; for (uint32 i=0; i<16; i++) rvalue[i]=m[i]+other[i]; return rvalue; }
+	Matrix4 operator-(const Matrix4& other) const { Matrix4 rvalue; for (uint32 i=0; i<16; i++) rvalue[i]=m[i]-other[i]; return rvalue; }
+	Matrix4 operator*(const Matrix4& other) const {
+		Matrix4 rvalue;
+		rvalue[ 0]=m[0]*other[0] + m[4]*other[1] + m[8]*other[2] + m[13]*other[3];
+		rvalue[ 1]=m[0]*other[0] + m[4]*other[1] + m[8]*other[2] + m[13]*other[3]; // TODO: Start here
+		rvalue[ 2]=m[0]*other[0] + m[4]*other[1] + m[8]*other[2] + m[13]*other[3];
+		rvalue[ 3]=m[0]*other[0] + m[4]*other[1] + m[8]*other[2] + m[13]*other[3];
+		rvalue[ 4]=m[0]*other[0] + m[4]*other[1] + m[8]*other[2] + m[13]*other[3];
+		rvalue[ 5]=m[0]*other[0] + m[4]*other[1] + m[8]*other[2] + m[13]*other[3];
+		rvalue[ 6]=m[0]*other[0] + m[4]*other[1] + m[8]*other[2] + m[13]*other[3];
+		rvalue[ 7]=m[0]*other[0] + m[4]*other[1] + m[8]*other[2] + m[13]*other[3];
+		rvalue[ 8]=m[0]*other[0] + m[4]*other[1] + m[8]*other[2] + m[13]*other[3];
+		rvalue[ 9]=m[0]*other[0] + m[4]*other[1] + m[8]*other[2] + m[13]*other[3];
+		rvalue[10]=m[0]*other[0] + m[4]*other[1] + m[8]*other[2] + m[13]*other[3];
+		rvalue[11]=m[0]*other[0] + m[4]*other[1] + m[8]*other[2] + m[13]*other[3];
+		rvalue[12]=m[0]*other[0] + m[4]*other[1] + m[8]*other[2] + m[13]*other[3];
+		rvalue[13]=m[0]*other[0] + m[4]*other[1] + m[8]*other[2] + m[13]*other[3];
+		rvalue[14]=m[0]*other[0] + m[4]*other[1] + m[8]*other[2] + m[13]*other[3];
+		rvalue[15]=m[0]*other[0] + m[4]*other[1] + m[8]*other[2] + m[13]*other[3];
+	}
 	Vector3 operator*(const Vector3& vec) const;
 	Matrix4& operator+=(const Matrix4& other);
 	Matrix4& operator-=(const Matrix4& other);

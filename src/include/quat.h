@@ -10,8 +10,8 @@ public:
 	Quat() : x(0), y(0), z(0), w(0) {}
 	Quat(const Quat& q) : x(q.X()), y(q.Y()), z(q.Z()), w(q.W()) {}
 	Quat(float x, float y, float z, float w) : x(x), y(y), z(z), w(w) {}
-	Quat(const RotAxis& rotaxis) : x(rotaxis.Axis().X() * sin(rotaxis.Angle() / 2.f)), y(rotaxis.Axis().Y() * sin(rotaxis.Angle() / 2.f)), z(rotaxis.Axis().Z() * sin(rotaxis.Angle() / 2.f)), w(cos(rotaxis.Angle() / 2.f)) {}
-	Quat(const Vector3& euler): x(euler.X()), y(euler.Y()), z(euler.Z()), w(0) {}
+	Quat(const RotAxis& rotaxis) { SetAxis(rotaxis); }
+	Quat(const Vector3& euler) { SetEuler(euler); }
 
 	bool operator==(const Quat& other) const { return x == other.X() && y == other.Y() && z == other.Z() && w == other.W(); }
 	Quat& operator=(const Quat& other) { x = other.X(); y = other.Y(); z = other.Z(); w = other.W(); return *this; }
@@ -58,6 +58,25 @@ inline Quat Quat::Normalized() const {
 		q.w /= mag;
 	}
 	return q;
+}
+
+inline RotAxis Quat::Axis() const
+{
+	float mag = sqrt(x*x + y*y + z*z);
+	float axex = x / mag;
+	float axey = y / mag;
+	float axez = z / mag;
+	float angle = acos(w) * 2;
+	return RotAxis(angle, Vector3(axex, axey, axez));
+}
+
+inline void Quat::SetAxis(const RotAxis& rotaxis)
+{
+	float h = sin(rotaxis.Angle() / 2.f);
+	x = rotaxis.Axis().X() * h;
+	y = rotaxis.Axis().Y() * h;
+	z = rotaxis.Axis().Z() * h;
+	w = h;
 }
 
 inline Vector3 Quat::Euler() const {
