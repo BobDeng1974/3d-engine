@@ -10,67 +10,127 @@
 class Matrix4 {
 public:
 	Matrix4() {
-		m[ 0]=0; m[ 4]=0; m[ 8]=0; m[13]=0;
-		m[ 1]=0; m[ 5]=0; m[ 9]=0; m[14]=0;
-		m[ 2]=0; m[ 6]=0; m[11]=0; m[15]=0;
-		m[ 3]=0; m[ 7]=0; m[12]=0; m[16]=0;
+		m[ 0]=0; m[ 4]=0; m[ 8]=0; m[12]=0;
+		m[ 1]=0; m[ 5]=0; m[ 9]=0; m[13]=0;
+		m[ 2]=0; m[ 6]=0; m[10]=0; m[14]=0;
+		m[ 3]=0; m[ 7]=0; m[11]=0; m[15]=0;
 	}
 	Matrix4(const Matrix4& other) { for (uint32 i=0; i<16; i++) m[i] = other[i]; }
 	Matrix4(const float* values) { for (uint32 i=0; i<16; i++) { m[i] = *values; values++; } }
 
-	bool operator==(const Matrix4& other) const { for (uint32 i=0; i<16; i++) if (m[i]!=other[i]) return false; return true; } //FIXME: Compare floats with EPSILON
+	bool operator==(const Matrix4& other) const { for (uint32 i=0; i<16; i++) if (m[i]!=other[i]) return false; return true; } // FIXME: Compare floats with EPSILON
 	Matrix4& operator=(const Matrix4& other) { for (uint32 i=0; i<16; i++) m[i]=other[i]; return *this; }
 	Matrix4 operator+(const Matrix4& other) const { Matrix4 rvalue; for (uint32 i=0; i<16; i++) rvalue[i]=m[i]+other[i]; return rvalue; }
 	Matrix4 operator-(const Matrix4& other) const { Matrix4 rvalue; for (uint32 i=0; i<16; i++) rvalue[i]=m[i]-other[i]; return rvalue; }
 	Matrix4 operator*(const Matrix4& other) const {
 		Matrix4 rvalue;
-		rvalue[ 0]=m[0]*other[0] + m[4]*other[1] + m[8]*other[2] + m[13]*other[3];
-		rvalue[ 1]=m[0]*other[0] + m[4]*other[1] + m[8]*other[2] + m[13]*other[3]; // TODO: Start here
-		rvalue[ 2]=m[0]*other[0] + m[4]*other[1] + m[8]*other[2] + m[13]*other[3];
-		rvalue[ 3]=m[0]*other[0] + m[4]*other[1] + m[8]*other[2] + m[13]*other[3];
-		rvalue[ 4]=m[0]*other[0] + m[4]*other[1] + m[8]*other[2] + m[13]*other[3];
-		rvalue[ 5]=m[0]*other[0] + m[4]*other[1] + m[8]*other[2] + m[13]*other[3];
-		rvalue[ 6]=m[0]*other[0] + m[4]*other[1] + m[8]*other[2] + m[13]*other[3];
-		rvalue[ 7]=m[0]*other[0] + m[4]*other[1] + m[8]*other[2] + m[13]*other[3];
-		rvalue[ 8]=m[0]*other[0] + m[4]*other[1] + m[8]*other[2] + m[13]*other[3];
-		rvalue[ 9]=m[0]*other[0] + m[4]*other[1] + m[8]*other[2] + m[13]*other[3];
-		rvalue[10]=m[0]*other[0] + m[4]*other[1] + m[8]*other[2] + m[13]*other[3];
-		rvalue[11]=m[0]*other[0] + m[4]*other[1] + m[8]*other[2] + m[13]*other[3];
-		rvalue[12]=m[0]*other[0] + m[4]*other[1] + m[8]*other[2] + m[13]*other[3];
-		rvalue[13]=m[0]*other[0] + m[4]*other[1] + m[8]*other[2] + m[13]*other[3];
-		rvalue[14]=m[0]*other[0] + m[4]*other[1] + m[8]*other[2] + m[13]*other[3];
-		rvalue[15]=m[0]*other[0] + m[4]*other[1] + m[8]*other[2] + m[13]*other[3];
+		rvalue[ 0]=m[0]*other[ 0] + m[4]*other[ 1] + m[ 8]*other[ 2] + m[12]*other[ 3];
+		rvalue[ 1]=m[0]*other[ 4] + m[4]*other[ 5] + m[ 8]*other[ 6] + m[12]*other[ 7];
+		rvalue[ 2]=m[0]*other[ 8] + m[4]*other[ 9] + m[ 8]*other[10] + m[12]*other[11];
+		rvalue[ 3]=m[0]*other[12] + m[4]*other[13] + m[ 8]*other[14] + m[12]*other[15];
+		rvalue[ 4]=m[1]*other[ 0] + m[5]*other[ 1] + m[ 9]*other[ 2] + m[13]*other[ 3];
+		rvalue[ 5]=m[1]*other[ 4] + m[5]*other[ 5] + m[ 9]*other[ 6] + m[13]*other[ 7];
+		rvalue[ 6]=m[1]*other[ 8] + m[5]*other[ 9] + m[ 9]*other[10] + m[13]*other[11];
+		rvalue[ 7]=m[1]*other[12] + m[5]*other[13] + m[ 9]*other[14] + m[13]*other[15];
+		rvalue[ 8]=m[2]*other[ 0] + m[6]*other[ 1] + m[10]*other[ 2] + m[14]*other[ 3];
+		rvalue[ 9]=m[2]*other[ 4] + m[6]*other[ 5] + m[10]*other[ 6] + m[14]*other[ 7];
+		rvalue[10]=m[2]*other[ 8] + m[6]*other[ 9] + m[10]*other[10] + m[14]*other[11];
+		rvalue[11]=m[2]*other[12] + m[6]*other[13] + m[10]*other[14] + m[14]*other[15];
+		rvalue[12]=m[3]*other[ 0] + m[7]*other[ 1] + m[11]*other[ 2] + m[15]*other[ 3];
+		rvalue[13]=m[3]*other[ 4] + m[7]*other[ 5] + m[11]*other[ 6] + m[15]*other[ 7];
+		rvalue[14]=m[3]*other[ 8] + m[7]*other[ 9] + m[11]*other[10] + m[15]*other[11];
+		rvalue[15]=m[3]*other[12] + m[7]*other[13] + m[11]*other[14] + m[15]*other[15];
+		return rvalue;
 	}
-	Vector3 operator*(const Vector3& vec) const;
-	Matrix4& operator+=(const Matrix4& other);
-	Matrix4& operator-=(const Matrix4& other);
-	Matrix4& operator*=(const Matrix4& other);
-	const float& operator[](uint32 pos) const;
-	float& operator[](uint32 pos);
+	Vector3 operator*(const Vector3& vec) const
+	{
+		Vector3 rvalue;
+		rvalue.SetX( vec.X()*m[ 0] + vec.X()*m[ 1] + vec.X()*m[ 2] + vec.X()*m[ 3] );
+		rvalue.SetY( vec.Y()*m[ 4] + vec.Y()*m[ 5] + vec.Y()*m[ 6] + vec.Y()*m[ 7] );
+		rvalue.SetZ( vec.Z()*m[ 8] + vec.Z()*m[ 9] + vec.Z()*m[10] + vec.Z()*m[11] );
+		// float w = m[12] + m[13] + m[14] + m[15];
+		return rvalue;
+	}
+	Matrix4& operator+=(const Matrix4& other) { for (uint32 i=0; i<16; i++) m[i]=m[i]+other[i]; return *this; }
+	Matrix4& operator-=(const Matrix4& other) { for (uint32 i=0; i<16; i++) m[i]=m[i]-other[i]; return *this; }
+	Matrix4& operator*=(const Matrix4& other) { for (uint32 i=0; i<16; i++) m[i]=m[i]*other[i]; return *this; }
+	const float& operator[](uint32 pos) const { return m[pos]; }
+	float& operator[](uint32 pos) { return m[pos]; }
 
-	void SetIdentity();
-	void Set(const float* m);
-	float& RC(uint32 row, uint32 column);
-	const float& RC(uint32 row, uint32 column) const;
-	void SetRC(uint32 row, uint32 column, float value);
+	void SetIdentity() {
+		m[ 0]=1; m[ 4]=0; m[ 8]=0; m[12]=0;
+		m[ 1]=0; m[ 5]=1; m[ 9]=0; m[13]=0;
+		m[ 2]=0; m[ 6]=0; m[10]=1; m[14]=0;
+		m[ 3]=0; m[ 7]=0; m[11]=0; m[15]=1;
+	}
+	void Set(const float* m) { for (uint32 i=0; i<16; i++) this->m[i]=m[i]; }
+	float& RC(uint32 row, uint32 column) { return m[row*4+column]; }
+	const float& RC(uint32 row, uint32 column) const { return m[row*4+column]; }
+	void SetRC(uint32 row, uint32 column, float value) { m[row*4+column] = value; }
 	
-	Vector3 Translation() const;
+	Vector3 Translation() const { return Vector3( m[12], m[13], m[14] ); }
 	
-	void SetTranslation(const Vector3& trans);
-	void SetRotation(const RotAxis& rot);
-	void SetScale(const Vector3& scale);
-	void Translate(const Vector3& trans);
-	void Rotate(const RotAxis& rot);
-	void Scale(const Vector3& scale);
+	void SetTranslation(const Vector3& trans) { SetIdentity(); m[12]=trans.X(); m[13]=trans.Y(); m[14]=trans.Z(); }
+	void SetRotation(const RotAxis& rot) {
+		SetIdentity();
+		float x = rot.Axis().X();
+		float y = rot.Axis().Y();
+		float z = rot.Axis().Z();
+		float c = DegCos(rot.Angle());
+		float s = DegSin(rot.Angle());
+		m[ 0] = x*x*(1-c)+c;
+		m[ 1] = x*y*(1-c)+z*s;
+		m[ 2] = x*z*(1-c)-y*s;
+		m[ 4] = x*y*(1-c)-x*s;
+		m[ 5] = y*y*(1-c)+x*s;
+		m[ 6] = y*z*(1-c)+x*s;
+		m[ 8] = x*z*(1-c)+y*s;
+		m[ 9] = y*z*(1-c)-x*s;
+		m[10] = z*z*(1-c)+c;
+	}
+	void SetScale(const Vector3& scale) { SetIdentity(); m[0]=scale.X(); m[5]=scale.Y(); m[10]=scale.Z(); }
+	void Translate(const Vector3& trans) { Matrix4 other; other.SetTranslation(trans); *this*=other; } 
+	void Rotate(const RotAxis& rot) { Matrix4 other; other.SetRotation(rot); *this*=other; }
+	void Scale(const Vector3& scale) { Matrix4 other; other.SetScale(scale); *this*=other; }
 
-	Matrix4 Transposed() const;
+	Matrix4 Transposed() const {
+		Matrix4 rvalue;
+		rvalue[ 0] = m[ 0];
+		rvalue[ 1] = m[ 4];
+		rvalue[ 2] = m[ 8];
+		rvalue[ 3] = m[12];
+		rvalue[ 4] = m[ 1];
+		rvalue[ 5] = m[ 5];
+		rvalue[ 6] = m[ 9];
+		rvalue[ 7] = m[13];
+		rvalue[ 8] = m[ 2];
+		rvalue[ 9] = m[ 6];
+		rvalue[10] = m[10];
+		rvalue[11] = m[14];
+		rvalue[12] = m[ 3];
+		rvalue[13] = m[ 7];
+		rvalue[14] = m[11];
+		rvalue[15] = m[15];
+		return rvalue;
+	}
 	Matrix4 Inverse() const;
 
-	void SetOrtho(float left, float right, float bottom, float top, float near, float far);
+	void SetOrtho(float left, float right, float bottom, float top, float near, float far) {
+		SetIdentity();
+		float transx = (right+left) / (right-left);
+		float transy = (top+bottom) / (top-bottom);
+		float transz = (far+near) / (far-near);
+		m[ 0] = 2/(right-left);
+		m[ 5] = 2/(top-bottom);
+		m[10] = -2/(far-near);
+		m[12] = transx;
+		m[13] = transy;
+		m[14] = transz;
+	}
 	void SetFrustum(float left, float right, float bottom, float top, float near, float far);
 	void SetPerspective(float fovy, float aspect, float near, float far);
 
-	void LookAt(const Vector3& pos, const Vector3& look, const Vector3& up);
+	void LookAt(const Vector3& pos, const Vector3& look, const Vector3& up) { RotAxis looked( pos.Dot(look), up ); SetRotation( looked ); }
 private:
 	float m[16];
 };
