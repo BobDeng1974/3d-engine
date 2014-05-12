@@ -3,6 +3,10 @@
 #define FULLSCREEN false
 
 int main(int argc, char* argv[]) {
+	// TESTING
+	Matrix4 m4x4;
+	m4x4 *= m4x4.Inverse();
+	// END TESTING
 	if ( FULLSCREEN)	Screen::Instance()->Open(Screen::Instance()->GetDesktopWidth(), Screen::Instance()->GetDesktopHeight(), true);
 	else				Screen::Instance()->Open(800, 600, false);
 

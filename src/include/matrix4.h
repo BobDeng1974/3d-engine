@@ -76,8 +76,8 @@ public:
 		float x = rot.Axis().X();
 		float y = rot.Axis().Y();
 		float z = rot.Axis().Z();
-		float c = DegCos(rot.Angle());
-		float s = DegSin(rot.Angle());
+		float c = (float) DegCos(rot.Angle());
+		float s = (float) DegSin(rot.Angle());
 		m[ 0] = x*x*(1-c)+c;
 		m[ 1] = x*y*(1-c)+z*s;
 		m[ 2] = x*z*(1-c)-y*s;
@@ -120,17 +120,43 @@ public:
 		float transx = (right+left) / (right-left);
 		float transy = (top+bottom) / (top-bottom);
 		float transz = (far+near) / (far-near);
-		m[ 0] = 2/(right-left);
-		m[ 5] = 2/(top-bottom);
-		m[10] = -2/(far-near);
+		m[ 0] = 2.f/(right-left);
+		m[ 5] = 2.f/(top-bottom);
+		m[10] = -2.f/(far-near);
 		m[12] = transx;
 		m[13] = transy;
 		m[14] = transz;
 	}
-	void SetFrustum(float left, float right, float bottom, float top, float near, float far);
-	void SetPerspective(float fovy, float aspect, float near, float far);
+	void SetFrustum(float left, float right, float bottom, float top, float near, float far) {
+		SetIdentity();
+		m[ 0] = (2.f*near)/(right-left);
+		m[ 5] = (2.f*near)/(top-bottom);
+		m[ 8] = (right+left)/(right-left);
+		m[ 9] = (top+bottom)/(top-bottom);
+		m[10] = -((far+near)/(far-near));
+		m[11] = -1.f;
+		m[14] = -((2.f*far*near)/(far-near));
+		m[15] = 0.f;
+	}
+	void SetPerspective(float fovy, float aspect, float near, float far) {
+		float height = near*(float) DegTan(fovy/2.0);
+		float width = height*aspect;
+		SetFrustum( -width, width, -height, height, near, far );
+	}
 
-	void LookAt(const Vector3& pos, const Vector3& look, const Vector3& up) { RotAxis looked( pos.Dot(look), up ); SetRotation( looked ); }
+	void LookAt(const Vector3& pos, const Vector3& look, const Vector3& up) {
+		Vector3 zvec( pos-look );
+		zvec.Normalize();
+		Vector3 xvec( zvec.Cross( up ) );
+		Vector3 yvec( zvec.Cross( xvec ) );
+		xvec.Normalize();
+		yvec.Normalize();
+		SetIdentity();
+		m[ 0] = xvec.X(); m[ 4] = xvec.Y(); m[ 8] = xvec.Z();
+		m[ 1] = yvec.X(); m[ 5] = yvec.Y(); m[ 9] = yvec.Z();
+		m[ 2] = zvec.X(); m[ 6] = zvec.Y(); m[10] = zvec.Z();
+		Translate( Vector3( -pos.X(), -pos.Y(), -pos.Z() ) );
+	}
 private:
 	float m[16];
 };

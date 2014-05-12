@@ -1,6 +1,7 @@
 #ifndef UGINE_MAIN_H
 #define UGINE_MAIN_H
 
+#include "util.h"
 #include "array.h"
 #include "camera.h"
 #include "entity.h"

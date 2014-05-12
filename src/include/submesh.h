@@ -10,20 +10,20 @@ class Submesh {
 public:
 	static Ptr<Submesh> Create(Ptr<Texture> tex = nullptr);
 
-	void AddVertex(const Vertex& v);
-	void AddTriangle(uint32 v0, uint32 v1, uint32 v2);
+	void AddVertex(const Vertex& v) { vertices.Add( v ); }
+	void AddTriangle(uint32 v0, uint32 v1, uint32 v2) { indices.Add( v0 ); indices.Add( v1 ); indices.Add( v2 ); }
 
-	Ptr<Texture> GetTexture() const;
-	void SetTexture(Ptr<Texture> tex);
+	Ptr<Texture> GetTexture() const { return texture; }
+	void SetTexture(Ptr<Texture> tex) { texture = tex; }
 
-	const Array<Vertex>& GetVertices() const;
-	Array<Vertex>& GetVertices();
+	const Array<Vertex>& GetVertices() const { return vertices; }
+	Array<Vertex>& GetVertices() { return vertices; }
 
 	void Rebuild();
 	void Render();
 protected:
 	Submesh(Ptr<Texture> tex);
-	~Submesh();
+	virtual ~Submesh();
 private:
 	Ptr<Texture> texture;
 	uint32 vertexBuffer;

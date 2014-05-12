@@ -80,22 +80,22 @@ inline void Quat::SetAxis(const RotAxis& rotaxis)
 }
 
 inline Vector3 Quat::Euler() const {
-	float pitch = DegATan2(2 * (y*z + w*x), w*w - x*x - y*y + z*z);
-	float yaw = DegASin(-2 * (x*z - w*y));
-	float roll = DegATan2(2 * (x*y + w*z), w*w + x*x - y*y - z*z);
+	float pitch = (float) DegATan2(2.f * (y*z + w*x), w*w - x*x - y*y + z*z);
+	float yaw = (float) DegASin(-2.f * (x*z - w*y));
+	float roll = (float) DegATan2(2.f * (x*y + w*z), w*w + x*x - y*y - z*z);
 	return Vector3(pitch, yaw, roll);
 }
 
 inline void Quat::SetEuler(const Vector3& euler) {
-	float halfx = euler.X() * 0.5;
-	float halfy = euler.Y() * 0.5;
-	float halfz = euler.Z() * 0.5;
-	float sinyaw = DegSin(halfy);
-	float sinpitch = DegSin(halfx);
-	float sinroll = DegSin(halfz);
-	float cosyaw = DegCos(halfy);
-	float cospitch = DegCos(halfx);
-	float cosroll = DegCos(halfz);
+	float halfx = euler.X() * 0.5f;
+	float halfy = euler.Y() * 0.5f;
+	float halfz = euler.Z() * 0.5f;
+	float sinyaw = (float) DegSin(halfy);
+	float sinpitch = (float) DegSin(halfx);
+	float sinroll = (float) DegSin(halfz);
+	float cosyaw = (float) DegCos(halfy);
+	float cospitch = (float) DegCos(halfx);
+	float cosroll = (float) DegCos(halfz);
 
 	x = sinpitch * cosyaw * cosroll - cospitch * sinyaw * sinroll;
 	y = cospitch * sinyaw * cosroll + sinpitch * cosyaw * sinroll;
@@ -114,8 +114,8 @@ inline Quat Quat::Slerp(const Quat& other, float t) const {
 	}
 
 	if ( dot < 0.95f ) {
-		float angle = DegACos(dot);
-		return (*this * DegSin(angle*(1-t)) + q*DegSin(angle*t)) / DegSin(angle);
+		float angle = (float) DegACos(dot);
+		return (*this * (float) DegSin(angle*(1-t)) + q*(float) DegSin(angle*t)) / (float) DegSin(angle);
 	} else {
 		return this->Lerp(q, t);
 	}

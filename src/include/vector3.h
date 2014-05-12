@@ -32,6 +32,7 @@ public:
 
 	float Length() const { return sqrt(Dot(*this)); }
 
+	void Normalize() { float invlength = 1.0f / Length(); x = x * invlength; y = y * invlength; z = z * invlength; }
 	Vector3 Normalized() const { float invlength = 1.0f / Length(); return Vector3(x * invlength, y * invlength, z * invlength); }
 
 	float Dot(const Vector3& other) const { return x * other.x + y * other.y + z * other.z; }

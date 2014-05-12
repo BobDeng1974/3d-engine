@@ -1,6 +1,7 @@
 #include "../include/renderer.h"
 #include "../lib/glew/glew.h"
 #include "../lib/glfw/glfw.h"
+#include "../include/util.h"
 
 // stb_image.c:
 extern "C" uint8 *stbi_load(char const *filename, int *x, int *y, int *comp, int req_comp);
@@ -8,6 +9,23 @@ extern "C" uint8 *stbi_load(char const *filename, int *x, int *y, int *comp, int
 Ptr<Renderer> Renderer::instance = NULL;
 
 Renderer::Renderer() {
+	uint32 vertexShaderID = CreateVertexShader( String::Read( "../data/vertex.glsl" ) );
+	uint32 fragmentShaderID = CreateFragmentShader( String::Read( "../data/fragment.glsl" ) );
+	if ( vertexShaderID || fragmentShaderID == 0 )
+	{
+		// Shaders doesn´t build correctly
+	}
+	uint32 programID = CreateProgram();
+	AttachShader( programID, vertexShaderID );
+	AttachShader( programID, fragmentShaderID );
+	if ( !LinkProgram( programID ) )
+	{
+		// Program couldn´t build
+	}
+	FreeShader( vertexShaderID );
+	FreeShader( fragmentShaderID );
+	defaultProgram = programID;
+	UseProgram( programID );
 }
 
 void Renderer::Setup3D() {
@@ -114,31 +132,87 @@ void Renderer::DrawBuffer(uint32 numIndices, int coordsOffset, int texCoordsOffs
 }
 
 uint32 Renderer::CreateVertexShader(const String& source) {
-	return 0;
+	const char* code = source.ToCString();
+	code = source.ToCString();
+	GLuint id = glCreateShader( GL_VERTEX_SHADER );
+	glShaderSource( id, 1, &code, NULL );
+	GLint retCode;
+	char errorMsg[ 1024 ];
+	glCompileShader( id );
+	glGetShaderiv( id, GL_COMPILE_STATUS, &retCode );
+	if ( retCode == GL_FALSE )
+	{
+		// Compilation went wrong
+		glGetShaderInfoLog( id, sizeof( errorMsg ), NULL, errorMsg );
+		String tempErrorMsg( 1024, errorMsg[0] );
+		programError = tempErrorMsg;
+		return 0;
+	}
+	return id;
 }
 
 uint32 Renderer::CreateFragmentShader(const String& source) {
-	return 0;
+	const char* code = source.ToCString();
+	code = source.ToCString();
+	GLuint id = glCreateShader( GL_FRAGMENT_SHADER );
+	glShaderSource( id, 1, &code, NULL );
+	GLint retCode;
+	char errorMsg[1024];
+	glCompileShader( id );
+	glGetShaderiv( id, GL_COMPILE_STATUS, &retCode );
+	if ( retCode == GL_FALSE )
+	{
+		// Compilation went wrong
+		glGetShaderInfoLog( id, sizeof( errorMsg ), NULL, errorMsg );
+		String tempErrorMsg( 1024, errorMsg[0] );
+		programError = tempErrorMsg;
+		return 0;
+	}
+	return id;
 }
 
 void Renderer::FreeShader(uint32 shader) {
+	glDeleteShader( shader );
 }
 
 uint32 Renderer::CreateProgram() {
-	return 0;
+	return glCreateProgram();
 }
 
 void Renderer::FreeProgram(uint32 program) {
+	glDeleteProgram( program );
 }
 
 void Renderer::AttachShader(uint32 program, uint32 shader) {
+	glAttachShader( program, shader );
 }
 
 bool Renderer::LinkProgram(uint32 program) {
-	return false;
+	GLint retCode;
+	char errorMsg[1024];
+	glLinkProgram( program );
+	glGetProgramiv( program, GL_LINK_STATUS, &retCode );
+	if ( retCode == GL_FALSE )
+	{
+		// Linking went wrong
+		glGetProgramInfoLog( program, sizeof( errorMsg ), NULL, errorMsg );
+		String tempErrorMsg( 1024, errorMsg[0] );
+		programError = tempErrorMsg;
+		return 0;
+	}
 }
 
 void Renderer::UseProgram(uint32 program) {
+	glUseProgram( (program == 0) ? defaultProgram : program );
+	mvpLoc = glGetUniformLocation( program, "MVP" );
+	vposLoc = glGetAttribLocation( program, "vpos" );
+	vtexLoc = glGetAttribLocation( program, "vuv" );
+	texSamplerLoc = 0;
+	// Location forced by use layout(...) in shader
+	if ( !AllEqual<int,int,int>( mvpLoc, vposLoc, vtexLoc, -1 ) )
+	{
+		// Someone var didn´t find in shaders
+	}
 }
 
 const String& Renderer::GetProgramError() {
