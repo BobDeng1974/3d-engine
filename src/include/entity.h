@@ -9,14 +9,14 @@ class Entity {
 public:
 	static Ptr<Entity> Create();
 
-	virtual const Vector3& GetPosition() const;
-	virtual Vector3& GetPosition();
+	virtual const Vector3& GetPosition() const { return position; }
+	virtual Vector3& GetPosition() { return position; }
 
-	virtual const Quat& GetRotation() const;
-	virtual Quat& GetRotation();
+	virtual const Quat& GetRotation() const { return rotation; }
+	virtual Quat& GetRotation() { return rotation; }
 
-	virtual const Vector3& GetScale() const;
-	virtual Vector3& GetScale();
+	virtual const Vector3& GetScale() const { return scale; }
+	virtual Vector3& GetScale() { return scale; }
 
 	virtual void Move(const Vector3& speed);
 

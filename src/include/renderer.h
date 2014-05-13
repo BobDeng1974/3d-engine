@@ -7,7 +7,7 @@
 
 class Renderer {
 public:
-	static Ptr<Renderer> Instance() { if ( instance == 0 ) instance = new Renderer(); return instance; }
+	static Ptr<Renderer> Instance() { if ( !instance ) instance = Ptr<Renderer>( new Renderer() ); return instance; }
 
 	// Setup
 	void Setup3D();

@@ -8,13 +8,13 @@
 
 class Scene {
 public:
-	static Ptr<Scene> Instance();
+	static Ptr<Scene> Instance() { if ( !instance ) instance = Ptr<Scene>( new Scene() ); return instance; }
 
 	Ptr<const Camera> GetCurrentCamera() const;
 	Ptr<Camera> GetCurrentCamera();
 	const Matrix4& GetModel() const;
 	const Matrix4& GetMVP() const;
-	void SetModel(const Matrix4& m);
+	void SetModel(const Matrix4& m) { modelMatrix = m; }
 
 	void AddEntity(Ptr<Entity> entity);
 	void RemoveEntity(Ptr<Entity> entity);
