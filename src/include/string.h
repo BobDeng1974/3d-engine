@@ -476,4 +476,14 @@ inline Array<String> String::Split(const String& delim) const {
     return arr;
 }
 
+String operator+(const char* chars, const String& str);
+inline String operator+(const char* chars, const String& str) {
+	char* buf = (char*)malloc( strlen(chars) + str.Length() + 1);
+	strcpy(buf, chars);
+	strcat(buf, str.ToCString());
+	String newStr(buf);
+	free(buf);
+	return newStr;
+}
+
 #endif // SWAN_STRING_H

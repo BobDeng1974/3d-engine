@@ -6,9 +6,16 @@ Ptr<Entity> Entity::Create()
 	return Ptr<Entity>( new Entity() );
 }
 
+Entity::Entity()
+{
+	position = Vector3( 0.f, 0.f, 0.f );
+	rotation = Quat( 0.f, 0.f, 0.f, 0.f );
+	scale = Vector3( 1.f, 1.f, 1.f );
+}
+
 void Entity::Move( const Vector3& speed )
 {
-	position += speed;
+	position += rotation * speed;
 }
 
 void Entity::Render()

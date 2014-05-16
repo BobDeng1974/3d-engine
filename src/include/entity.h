@@ -24,7 +24,7 @@ public:
 	virtual void Render();
 protected:
 	Entity();
-	virtual ~Entity();
+	virtual ~Entity() {}
 private:
 	Vector3 position;
 	Quat rotation;

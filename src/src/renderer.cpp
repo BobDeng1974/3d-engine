@@ -6,26 +6,29 @@
 // stb_image.c:
 extern "C" uint8 *stbi_load(char const *filename, int *x, int *y, int *comp, int req_comp);
 
-Ptr<Renderer> Renderer::instance = NULL;
+Ptr<Renderer> Renderer::instance = nullptr;
 
 Renderer::Renderer() {
-	uint32 vertexShaderID = CreateVertexShader( String::Read( "../data/vertex.glsl" ) );
-	uint32 fragmentShaderID = CreateFragmentShader( String::Read( "../data/fragment.glsl" ) );
-	if ( vertexShaderID || fragmentShaderID == 0 )
+	if ( instance == 0 )
 	{
-		// Shaders doesn´t build correctly
+		uint32 vertexShaderID = CreateVertexShader( String::Read( "../data/vertex.glsl" ) );
+		uint32 fragmentShaderID = CreateFragmentShader( String::Read( "../data/fragment.glsl" ) );
+		if ( vertexShaderID == 0 || fragmentShaderID == 0 )
+		{
+			// Shaders doesn´t build correctly
+		}
+		uint32 programID = CreateProgram();
+		AttachShader( programID, vertexShaderID );
+		AttachShader( programID, fragmentShaderID );
+		if ( !LinkProgram( programID ) )
+		{
+			// Program couldn´t build
+		}
+		FreeShader( vertexShaderID );
+		FreeShader( fragmentShaderID );
+		defaultProgram = programID;
+		UseProgram( programID );
 	}
-	uint32 programID = CreateProgram();
-	AttachShader( programID, vertexShaderID );
-	AttachShader( programID, fragmentShaderID );
-	if ( !LinkProgram( programID ) )
-	{
-		// Program couldn´t build
-	}
-	FreeShader( vertexShaderID );
-	FreeShader( fragmentShaderID );
-	defaultProgram = programID;
-	UseProgram( programID );
 }
 
 void Renderer::Setup3D() {
@@ -38,6 +41,7 @@ void Renderer::Setup3D() {
 void Renderer::SetMVP(const float* m) {
 	glMatrixMode(GL_PROJECTION);
 	glLoadMatrixf(m);
+	glUniformMatrix4fv( mvpLoc, 1, false, m );
 }
 
 void Renderer::SetViewport(int x, int y, int w, int h) {
@@ -124,10 +128,14 @@ void Renderer::SetIndexBufferData(const void* data, uint32 dataSize) {
 }
 
 void Renderer::DrawBuffer(uint32 numIndices, int coordsOffset, int texCoordsOffset, uint16 stride) {
-	glEnableClientState(GL_VERTEX_ARRAY);
+	/*glEnableClientState(GL_VERTEX_ARRAY);
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	glVertexPointer(3, GL_FLOAT, stride, (const void*)coordsOffset);
-	glTexCoordPointer(2, GL_FLOAT, stride, (const void*)texCoordsOffset);
+	glTexCoordPointer(2, GL_FLOAT, stride, (const void*)texCoordsOffset);*/
+	if ( vposLoc != -1 ) glEnableVertexAttribArray( vposLoc );
+	glVertexAttribPointer( vposLoc, 3, GL_FLOAT, true, stride, (const void*) coordsOffset );
+	if ( vtexLoc != -1 ) glEnableVertexAttribArray( vtexLoc );
+	glVertexAttribPointer( vtexLoc, 2, GL_FLOAT, true, stride, (const void*) texCoordsOffset );
 	glDrawElements(GL_TRIANGLES, numIndices, GL_UNSIGNED_SHORT, 0);
 }
 
@@ -198,18 +206,20 @@ bool Renderer::LinkProgram(uint32 program) {
 		glGetProgramInfoLog( program, sizeof( errorMsg ), NULL, errorMsg );
 		String tempErrorMsg( 1024, errorMsg[0] );
 		programError = tempErrorMsg;
-		return 0;
+		return false;
 	}
+	return true;
 }
 
 void Renderer::UseProgram(uint32 program) {
 	glUseProgram( (program == 0) ? defaultProgram : program );
+	// Location forced by use layout(...) in shader
 	mvpLoc = glGetUniformLocation( program, "MVP" );
 	vposLoc = glGetAttribLocation( program, "vpos" );
 	vtexLoc = glGetAttribLocation( program, "vuv" );
 	texSamplerLoc = 0;
-	// Location forced by use layout(...) in shader
-	if ( !AllEqual<int,int,int>( mvpLoc, vposLoc, vtexLoc, -1 ) )
+	// Check found
+	if ( mvpLoc == -1 || vposLoc == -1 || vtexLoc == -1 )
 	{
 		// Someone var didn´t find in shaders
 	}

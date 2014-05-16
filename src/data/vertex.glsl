@@ -5,9 +5,9 @@ in vec3 vpos;
 in vec2 vuv;
 out vec2 fuv;
 
-layout(location=1) uniform vec3 MVP;
-layout(location=2) in vec3 vpos;
-layout(location=3) in vec3 vuv;
+// layout(location=1) uniform vec3 MVP;
+// layout(location=2) in vec3 vpos;
+// layout(location=3) in vec3 vuv;
 
 void main()
 {

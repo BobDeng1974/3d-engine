@@ -5,16 +5,17 @@
 int main(int argc, char* argv[]) {
 	// TESTING
 	Matrix4 m4x4;
+	m4x4.SetIdentity();
 	m4x4 *= m4x4.Inverse();
 	// END TESTING
 	if ( FULLSCREEN)	Screen::Instance()->Open(Screen::Instance()->GetDesktopWidth(), Screen::Instance()->GetDesktopHeight(), true);
 	else				Screen::Instance()->Open(800, 600, false);
 
-	Ptr<Mesh> mesh = ResourceManager::Instance()->LoadMesh("data/box.msh");
+	Ptr<Mesh> mesh = ResourceManager::Instance()->LoadMesh("../data/box.msh");
 
 	Ptr<Camera> camera = Camera::Create();
 	camera->SetPerspective(45, float(Screen::Instance()->GetWidth()) / Screen::Instance()->GetHeight(), 0.001, 1000);
-	camera->SetUsesTarget(true);
+	//camera->SetUsesTarget(true);
 	camera->GetPosition() = Vector3(0, 1, 3);
 	camera->SetColor(1, 1, 1);
 	Scene::Instance()->AddEntity(camera.UpCast<Entity>());
@@ -32,6 +33,8 @@ int main(int argc, char* argv[]) {
 
 		Screen::Instance()->Refresh();
 	}
+
+	ResourceManager::Instance()->FreeResources();
 
 	return 0;
 }

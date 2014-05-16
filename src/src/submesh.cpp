@@ -3,7 +3,7 @@
 #include "../include/util.h"
 #include <stddef.h>
 
-inline Ptr<Submesh> Submesh::Create( Ptr<Texture> tex )
+Ptr<Submesh> Submesh::Create( Ptr<Texture> tex )
 {
 	Ptr<Submesh> sm( new Submesh( tex ) );
 	return sm;
@@ -11,11 +11,11 @@ inline Ptr<Submesh> Submesh::Create( Ptr<Texture> tex )
 
 Submesh::Submesh(Ptr<Texture> tex) :	indexBuffer(0), 
 										vertexBuffer(0), 
-										texture(texture) {}
+										texture(tex) {}
 
 Submesh::~Submesh()
 {
-	if ( !AllEqual<int,int,int>( indexBuffer, vertexBuffer, 0 ) )
+	if ( indexBuffer != 0 && vertexBuffer != 0 ) //( !AllEqual<int,int,int>( indexBuffer, vertexBuffer, 0 ) )
 	{
 		Renderer::Instance()->FreeBuffer( indexBuffer );
 		Renderer::Instance()->FreeBuffer( vertexBuffer );
@@ -26,7 +26,7 @@ Submesh::~Submesh()
 
 void Submesh::Rebuild()
 {
-	if ( AllEqual<int,int,int>( indexBuffer, vertexBuffer, 0 ) )
+	if ( indexBuffer == 0 && vertexBuffer == 0 ) //( AllEqual<int,int,int>( indexBuffer, vertexBuffer, 0 ) )
 	{
 		// Create for the first time
 		indexBuffer = Renderer::Instance()->CreateBuffer();
@@ -41,7 +41,7 @@ void Submesh::Rebuild()
 void Submesh::Render()
 {
 	// Activate texture
-	if ( texture ) Renderer::Instance()->BindTexture( texture->GetHandle() );
+	if ( texture != 0 ) Renderer::Instance()->BindTexture( texture->GetHandle() );
 	else Renderer::Instance()->BindTexture( 0 );
 	
 	// Calculate offset

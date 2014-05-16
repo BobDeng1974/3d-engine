@@ -21,7 +21,7 @@ public:
 	Ptr(const Ptr<T>& p)					: data(p.data), ref(p.ref) { ref->Inc(); }
 	Ptr(const WPtr<T>& p);
 	~Ptr()									{ if ( ref->Dec() == 0 ) { delete data; delete ref; } }
-	bool operator bool() const { return (bool) data; }
+
 	T& operator*() const					{ return *data; }
 	T* operator->() const					{ return data; }
 	Ptr<T>& operator=(const Ptr<T>& p)		{ if ( *this != p ) { if ( ref->Dec() == 0 ) { delete data; delete ref; } data = p.data; ref = p.ref; ref->Inc(); } return *this; }

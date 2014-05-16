@@ -22,7 +22,7 @@ public:
 	void Render() { for ( uint32 i = 0; i < submeshes.Size(); i++ ) submeshes[i]->Render(); }
 protected:
 	Mesh(const String& filename) : filename( filename ) {}
-	virtual ~Mesh();
+	virtual ~Mesh() {}
 private:
 	String filename;
 	Array<Ptr<Submesh>> submeshes;

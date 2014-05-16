@@ -13,7 +13,7 @@ public:
 	virtual void Render();
 protected:
 	Model(Ptr<Mesh> mesh);
-	virtual ~Model();
+	virtual ~Model() {}
 private:
 	Ptr<Mesh> mesh;
 friend class Ptr<Model>;
