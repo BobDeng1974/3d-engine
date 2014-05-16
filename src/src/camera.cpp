@@ -36,7 +36,7 @@ void Camera::Prepare()
 	}
 	else
 	{
-		lookAtTarget = GetRotation() * Vector3( 0.f, 0.f, 1.f );
+		lookAtTarget = GetRotation() * Vector3( 0.f, 0.f, -1.f );
 	}
 	viewMatrix.LookAt( viewMatrix.Translation(), lookAtTarget, Vector3( 0.f, 1.f, 0.f ) );
 	Renderer::Instance()->SetViewport( vx, vy, vw, vh );

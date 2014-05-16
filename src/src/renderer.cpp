@@ -9,26 +9,23 @@ extern "C" uint8 *stbi_load(char const *filename, int *x, int *y, int *comp, int
 Ptr<Renderer> Renderer::instance = nullptr;
 
 Renderer::Renderer() {
-	if ( instance == 0 )
+	uint32 vertexShaderID = CreateVertexShader( String::Read( "../data/vertex.glsl" ) );
+	uint32 fragmentShaderID = CreateFragmentShader( String::Read( "../data/fragment.glsl" ) );
+	if ( vertexShaderID == 0 || fragmentShaderID == 0 )
 	{
-		uint32 vertexShaderID = CreateVertexShader( String::Read( "../data/vertex.glsl" ) );
-		uint32 fragmentShaderID = CreateFragmentShader( String::Read( "../data/fragment.glsl" ) );
-		if ( vertexShaderID == 0 || fragmentShaderID == 0 )
-		{
-			// Shaders doesn´t build correctly
-		}
-		uint32 programID = CreateProgram();
-		AttachShader( programID, vertexShaderID );
-		AttachShader( programID, fragmentShaderID );
-		if ( !LinkProgram( programID ) )
-		{
-			// Program couldn´t build
-		}
-		FreeShader( vertexShaderID );
-		FreeShader( fragmentShaderID );
-		defaultProgram = programID;
-		UseProgram( programID );
+		// Shaders doesn´t build correctly
 	}
+	uint32 programID = CreateProgram();
+	AttachShader( programID, vertexShaderID );
+	AttachShader( programID, fragmentShaderID );
+	if ( !LinkProgram( programID ) )
+	{
+		// Program couldn´t build
+	}
+	FreeShader( vertexShaderID );
+	FreeShader( fragmentShaderID );
+	defaultProgram = programID;
+	UseProgram( programID );
 }
 
 void Renderer::Setup3D() {
@@ -39,8 +36,8 @@ void Renderer::Setup3D() {
 }
 
 void Renderer::SetMVP(const float* m) {
-	glMatrixMode(GL_PROJECTION);
-	glLoadMatrixf(m);
+	//glMatrixMode(GL_PROJECTION);
+	//glLoadMatrixf(m);
 	glUniformMatrix4fv( mvpLoc, 1, false, m );
 }
 
@@ -133,8 +130,8 @@ void Renderer::DrawBuffer(uint32 numIndices, int coordsOffset, int texCoordsOffs
 	glVertexPointer(3, GL_FLOAT, stride, (const void*)coordsOffset);
 	glTexCoordPointer(2, GL_FLOAT, stride, (const void*)texCoordsOffset);*/
 	if ( vposLoc != -1 ) glEnableVertexAttribArray( vposLoc );
-	glVertexAttribPointer( vposLoc, 3, GL_FLOAT, true, stride, (const void*) coordsOffset );
 	if ( vtexLoc != -1 ) glEnableVertexAttribArray( vtexLoc );
+	glVertexAttribPointer( vposLoc, 3, GL_FLOAT, true, stride, (const void*) coordsOffset );
 	glVertexAttribPointer( vtexLoc, 2, GL_FLOAT, true, stride, (const void*) texCoordsOffset );
 	glDrawElements(GL_TRIANGLES, numIndices, GL_UNSIGNED_SHORT, 0);
 }
@@ -218,6 +215,7 @@ void Renderer::UseProgram(uint32 program) {
 	vposLoc = glGetAttribLocation( program, "vpos" );
 	vtexLoc = glGetAttribLocation( program, "vuv" );
 	texSamplerLoc = 0;
+	glUniform1i( texSamplerLoc, 0 );
 	// Check found
 	if ( mvpLoc == -1 || vposLoc == -1 || vtexLoc == -1 )
 	{
