@@ -11,12 +11,6 @@ class Matrix4 {
 public:
 	Matrix4() {
 		SetIdentity();
-		/*
-		m[ 0]=0; m[ 4]=0; m[ 8]=0; m[12]=0;
-		m[ 1]=0; m[ 5]=0; m[ 9]=0; m[13]=0;
-		m[ 2]=0; m[ 6]=0; m[10]=0; m[14]=0;
-		m[ 3]=0; m[ 7]=0; m[11]=0; m[15]=0;
-		*/
 	}
 	Matrix4(const Matrix4& other) { for (uint32 i=0; i<16; i++) m[i] = other[i]; }
 	Matrix4(const float* values) { for (uint32 i=0; i<16; i++) { m[i] = *values; values++; } }
@@ -26,25 +20,25 @@ public:
 	Matrix4 operator+(const Matrix4& other) const { Matrix4 rvalue; for (uint32 i=0; i<16; i++) rvalue[i]=m[i]+other[i]; return rvalue; }
 	Matrix4 operator-(const Matrix4& other) const { Matrix4 rvalue; for (uint32 i=0; i<16; i++) rvalue[i]=m[i]-other[i]; return rvalue; }
 	Matrix4 operator*(const Matrix4& other) const {
-		/*Matrix4 rvalue;
-		rvalue[ 0]=m[0]*other[ 0] + m[4]*other[ 1] + m[ 8]*other[ 2] + m[12]*other[ 3];
-		rvalue[ 1]=m[0]*other[ 4] + m[4]*other[ 5] + m[ 8]*other[ 6] + m[12]*other[ 7];
-		rvalue[ 2]=m[0]*other[ 8] + m[4]*other[ 9] + m[ 8]*other[10] + m[12]*other[11];
-		rvalue[ 3]=m[0]*other[12] + m[4]*other[13] + m[ 8]*other[14] + m[12]*other[15];
-		rvalue[ 4]=m[1]*other[ 0] + m[5]*other[ 1] + m[ 9]*other[ 2] + m[13]*other[ 3];
-		rvalue[ 5]=m[1]*other[ 4] + m[5]*other[ 5] + m[ 9]*other[ 6] + m[13]*other[ 7];
-		rvalue[ 6]=m[1]*other[ 8] + m[5]*other[ 9] + m[ 9]*other[10] + m[13]*other[11];
-		rvalue[ 7]=m[1]*other[12] + m[5]*other[13] + m[ 9]*other[14] + m[13]*other[15];
-		rvalue[ 8]=m[2]*other[ 0] + m[6]*other[ 1] + m[10]*other[ 2] + m[14]*other[ 3];
-		rvalue[ 9]=m[2]*other[ 4] + m[6]*other[ 5] + m[10]*other[ 6] + m[14]*other[ 7];
-		rvalue[10]=m[2]*other[ 8] + m[6]*other[ 9] + m[10]*other[10] + m[14]*other[11];
-		rvalue[11]=m[2]*other[12] + m[6]*other[13] + m[10]*other[14] + m[14]*other[15];
-		rvalue[12]=m[3]*other[ 0] + m[7]*other[ 1] + m[11]*other[ 2] + m[15]*other[ 3];
-		rvalue[13]=m[3]*other[ 4] + m[7]*other[ 5] + m[11]*other[ 6] + m[15]*other[ 7];
-		rvalue[14]=m[3]*other[ 8] + m[7]*other[ 9] + m[11]*other[10] + m[15]*other[11];
-		rvalue[15]=m[3]*other[12] + m[7]*other[13] + m[11]*other[14] + m[15]*other[15];
-		return rvalue;*/
 		Matrix4 rvalue;
+		rvalue[ 0]=m[0]*other[ 0] + m[4]*other[ 0] + m[ 8]*other[ 0] + m[12]*other[ 0];
+		rvalue[ 1]=m[1]*other[ 1] + m[5]*other[ 1] + m[ 9]*other[ 1] + m[13]*other[ 1];
+		rvalue[ 2]=m[2]*other[ 2] + m[6]*other[ 2] + m[10]*other[ 2] + m[14]*other[ 2];
+		rvalue[ 3]=m[3]*other[ 3] + m[7]*other[ 3] + m[11]*other[ 3] + m[15]*other[ 3];
+		rvalue[ 4]=m[0]*other[ 4] + m[4]*other[ 4] + m[ 8]*other[ 4] + m[12]*other[ 4];
+		rvalue[ 5]=m[1]*other[ 5] + m[5]*other[ 5] + m[ 9]*other[ 5] + m[13]*other[ 5];
+		rvalue[ 6]=m[2]*other[ 6] + m[6]*other[ 6] + m[10]*other[ 6] + m[14]*other[ 6];
+		rvalue[ 7]=m[3]*other[ 7] + m[7]*other[ 7] + m[11]*other[ 7] + m[15]*other[ 7];
+		rvalue[ 8]=m[0]*other[ 8] + m[4]*other[ 8] + m[ 8]*other[ 8] + m[12]*other[ 8];
+		rvalue[ 9]=m[1]*other[ 9] + m[5]*other[ 9] + m[ 9]*other[ 9] + m[13]*other[ 9];
+		rvalue[10]=m[2]*other[10] + m[6]*other[10] + m[10]*other[10] + m[14]*other[10];
+		rvalue[11]=m[3]*other[11] + m[7]*other[11] + m[11]*other[11] + m[15]*other[11];
+		rvalue[12]=m[0]*other[12] + m[4]*other[12] + m[ 8]*other[12] + m[12]*other[12];
+		rvalue[13]=m[1]*other[13] + m[5]*other[13] + m[ 9]*other[13] + m[13]*other[13];
+		rvalue[14]=m[2]*other[14] + m[6]*other[14] + m[10]*other[14] + m[14]*other[14];
+		rvalue[15]=m[3]*other[15] + m[7]*other[15] + m[11]*other[15] + m[15]*other[15];
+		return rvalue;
+		/*Matrix4 rvalue;
 		rvalue[ 0]=m[ 0]*other[ 0] + m[ 1]*other[ 1] + m[ 2]*other[ 2] + m[ 3]*other[ 3];
 		rvalue[ 1]=m[ 0]*other[ 4] + m[ 1]*other[ 5] + m[ 2]*other[ 6] + m[ 3]*other[ 7];
 		rvalue[ 2]=m[ 0]*other[ 8] + m[ 1]*other[ 9] + m[ 2]*other[10] + m[ 3]*other[11];
@@ -61,7 +55,7 @@ public:
 		rvalue[13]=m[12]*other[ 4] + m[13]*other[ 5] + m[14]*other[ 6] + m[15]*other[ 7];
 		rvalue[14]=m[12]*other[ 8] + m[13]*other[ 9] + m[14]*other[10] + m[15]*other[11];
 		rvalue[15]=m[12]*other[12] + m[13]*other[13] + m[14]*other[13] + m[15]*other[15];
-		return rvalue;
+		return rvalue;*/
 	}
 	Vector3 operator*(const Vector3& vec) const
 	{
@@ -71,10 +65,15 @@ public:
 		rvalue.SetZ( vec.Z()*m[ 8] + vec.Z()*m[ 9] + vec.Z()*m[10] + vec.Z()*m[11] );
 		// float w = m[12] + m[13] + m[14] + m[15];
 		return rvalue;*/
+		// Set vector4 con w = 1 usando param
+		// Multiplicacion de filas(m) por columnas(vector)
+		Matrix4 in;
 		Vector3 rvalue;
-		rvalue.SetX( vec.X()*m[ 0] + vec.Y()*m[ 1] + vec.Z()*m[ 8] + m[12] );
-		rvalue.SetY( vec.X()*m[ 1] + vec.Y()*m[ 5] + vec.Z()*m[ 9] + m[13] );
-		rvalue.SetZ( vec.X()*m[ 2] + vec.Y()*m[ 6] + vec.Z()*m[10] + m[14] );
+		in[12] = vec.X(); in[13] = vec.Y(); in[14] = vec.Z(); in[15] = 1.f;
+		Matrix4 mresult = *this*in;
+		rvalue.SetX( mresult[12] );
+		rvalue.SetY( mresult[13] );
+		rvalue.SetZ( mresult[14] );
 		return rvalue;
 	}
 	Matrix4& operator+=(const Matrix4& other) { for (uint32 i=0; i<16; i++) m[i]=m[i]+other[i]; return *this; }
@@ -90,9 +89,9 @@ public:
 		m[ 3]=0; m[ 7]=0; m[11]=0; m[15]=1;
 	}
 	void Set(const float* m) { for (uint32 i=0; i<16; i++) this->m[i]=m[i]; }
-	float& RC(uint32 row, uint32 column) { return m[row*4+column]; }
-	const float& RC(uint32 row, uint32 column) const { return m[row*4+column]; }
-	void SetRC(uint32 row, uint32 column, float value) { m[row*4+column] = value; }
+	float& RC(uint32 row, uint32 column) { return m[column*4+row]; }
+	const float& RC(uint32 row, uint32 column) const { return m[column*4+row]; }
+	void SetRC(uint32 row, uint32 column, float value) { m[column*4+row] = value; }
 	
 	Vector3 Translation() const { return Vector3( m[12], m[13], m[14] ); }
 	

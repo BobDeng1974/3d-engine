@@ -30,7 +30,7 @@ Mesh::Mesh( const String& filename )
 		{
 			// Create submesh
 			String texFilename = docSubmeshes[i]["texture"].GetString();
-			Ptr<Texture> texture = ResourceManager::Instance()->LoadTexture( "../data/" + texFilename );
+			Ptr<Texture> texture = ResourceManager::Instance()->LoadTexture( "data/" + texFilename );
 			Ptr<Submesh> submesh = Submesh::Create( texture );
 			// Add indices
 			const rapidjson::Value& indices = docSubmeshes[i]["indices"];

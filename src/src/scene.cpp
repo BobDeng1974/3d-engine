@@ -33,6 +33,8 @@ void Scene::SetModel( const Matrix4& m )
 {
 	modelMatrix = m;
 
+	Matrix4 proj = currentCamera->GetProjection();
+	Matrix4 view = currentCamera->GetView();
 	Matrix4 MVP = currentCamera->GetProjection() * currentCamera->GetView() * modelMatrix;
 	Renderer::Instance()->SetMVP( &MVP[0] );
 }
