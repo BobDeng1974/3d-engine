@@ -16,8 +16,17 @@ public:
 	bool operator==(const Quat& other) const { return x == other.X() && y == other.Y() && z == other.Z() && w == other.W(); }
 	Quat& operator=(const Quat& other) { x = other.X(); y = other.Y(); z = other.Z(); w = other.W(); return *this; }
 	Quat operator+(const Quat& other) const { return Quat( x + other.X(), y + other.Y(), z + other.Z(), w + other.W() ); }
-	Quat operator*(const Quat& other) const { return Quat( w * other.X() + x * other.W() + y * other.Z() - z * other.Y(), w * other.Y() + y * other.W() + z * other.X() - x * other.Z(), w * other.Z() + z * other.W() + x * other.Y() - y * other.X(), w * other.W() - x * other.X() - y * other.Y() - z * other.Z() ); }
-	Vector3 operator*(const Vector3& vec) const { return Vector3( vec.X() * x + vec.X() * y + vec.X() * z + vec.X() * w, vec.Y() * x + vec.Y() * y + vec.Y() * z + vec.Y() * w,  vec.Z() * x + vec.Z() * y + vec.Z() * z + vec.Z() * w ); }
+	Quat operator*(const Quat& other) const { 
+		return Quat(	w * other.X() + x * other.W() + y * other.Z() - z * other.Y(), 
+						w * other.Y() + y * other.W() + z * other.X() - x * other.Z(), 
+						w * other.Z() + z * other.W() + x * other.Y() - y * other.X(), 
+						w * other.W() - x * other.X() - y * other.Y() - z * other.Z() );
+	}
+	Vector3 operator*(const Vector3& vec) const {
+		Quat conjugate( -x, -y, -z, -w );
+		Quat result = *this * Quat( vec ) * conjugate;
+		return Vector3( result.X(), result.Y(), result.Z() );
+	}
 	Quat operator*(float scale) const { return Quat( x * scale, y * scale, z * scale, w * scale ); }
 	Quat operator/(float scale) const { return Quat( x / scale, y / scale, z / scale, w / scale ); }
 
@@ -66,7 +75,7 @@ inline RotAxis Quat::Axis() const
 	float axex = x / mag;
 	float axey = y / mag;
 	float axez = z / mag;
-	float angle = acos(w) * 2;
+	float angle = DegACos(w) * 2.f;
 	return RotAxis(angle, Vector3(axex, axey, axez));
 }
 
@@ -76,7 +85,7 @@ inline void Quat::SetAxis(const RotAxis& rotaxis)
 	x = rotaxis.Axis().X() * h;
 	y = rotaxis.Axis().Y() * h;
 	z = rotaxis.Axis().Z() * h;
-	w = h;
+	w = cos( rotaxis.Angle() / 2.f );
 }
 
 inline Vector3 Quat::Euler() const {
@@ -90,12 +99,12 @@ inline void Quat::SetEuler(const Vector3& euler) {
 	float halfx = euler.X() * 0.5f;
 	float halfy = euler.Y() * 0.5f;
 	float halfz = euler.Z() * 0.5f;
-	float sinyaw = (float) DegSin(halfy);
-	float sinpitch = (float) DegSin(halfx);
-	float sinroll = (float) DegSin(halfz);
-	float cosyaw = (float) DegCos(halfy);
-	float cospitch = (float) DegCos(halfx);
-	float cosroll = (float) DegCos(halfz);
+	float sinyaw = (float) sin(halfy);
+	float sinpitch = (float) sin(halfx);
+	float sinroll = (float) sin(halfz);
+	float cosyaw = (float) cos(halfy);
+	float cospitch = (float) cos(halfx);
+	float cosroll = (float) cos(halfz);
 
 	x = sinpitch * cosyaw * cosroll - cospitch * sinyaw * sinroll;
 	y = cospitch * sinyaw * cosroll + sinpitch * cosyaw * sinroll;
@@ -115,7 +124,7 @@ inline Quat Quat::Slerp(const Quat& other, float t) const {
 
 	if ( dot < 0.95f ) {
 		float angle = (float) DegACos(dot);
-		return (*this * (float) DegSin(angle*(1-t)) + q*(float) DegSin(angle*t)) / (float) DegSin(angle);
+		return (*this * (float) sin(angle*(1-t)) + q*(float) sin(angle*t)) / (float) sin(angle);
 	} else {
 		return this->Lerp(q, t);
 	}

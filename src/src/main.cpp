@@ -3,11 +3,6 @@
 #define FULLSCREEN false
 
 int main(int argc, char* argv[]) {
-	// TESTING
-	Matrix4 m4x4;
-	m4x4.SetIdentity();
-	m4x4 *= m4x4.Inverse();
-	// END TESTING
 	if ( FULLSCREEN)	Screen::Instance()->Open(Screen::Instance()->GetDesktopWidth(), Screen::Instance()->GetDesktopHeight(), true);
 	else				Screen::Instance()->Open(800, 600, false);
 
@@ -15,7 +10,7 @@ int main(int argc, char* argv[]) {
 
 	Ptr<Camera> camera = Camera::Create();
 	camera->SetPerspective(45, float(Screen::Instance()->GetWidth()) / Screen::Instance()->GetHeight(), 0.001, 1000);
-	//camera->SetUsesTarget(true);
+	camera->SetUsesTarget(true);
 	camera->GetPosition() = Vector3(0, 1, 3);
 	camera->SetColor(1, 1, 1);
 	Scene::Instance()->AddEntity(camera.UpCast<Entity>());
@@ -25,8 +20,8 @@ int main(int argc, char* argv[]) {
 
 	float angle = 0;
 	while ( Screen::Instance()->IsOpened() && !Screen::Instance()->IsKeyPressed(GLFW_KEY_ESC) ) {
-		angle += 32 * Screen::Instance()->GetElapsed();
-		model->GetRotation().SetEuler(Vector3(0, angle, 0));
+		//angle += 32 * Screen::Instance()->GetElapsed();
+		//model->GetRotation().SetEuler(Vector3(0, angle, 0));
 
 		Scene::Instance()->Update(Screen::Instance()->GetElapsed());
 		Scene::Instance()->Render();

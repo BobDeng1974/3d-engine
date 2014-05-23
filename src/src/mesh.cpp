@@ -6,16 +6,19 @@
 
 Ptr<Mesh> Mesh::Create()
 {
-	// TODO: Build primitives programatically
-	return 0;
+	// Build primitives programatically
+	return Ptr<Mesh>( new Mesh() );
 }
 
 Ptr<Mesh> Mesh::Create( const String& filename )
 {
+	return Ptr<Mesh>( new Mesh( filename ) );
+}
+
+Mesh::Mesh( const String& filename )
+{
 	// FIXME: Error checks left
 
-	// Create mesh
-	Ptr<Mesh> mesh( new Mesh( filename ) );
 	// Parse JSON file
 	rapidjson::Document doc;
 	doc.Parse<0>( String::Read( filename ).ToCString() );
@@ -76,9 +79,7 @@ Ptr<Mesh> Mesh::Create( const String& filename )
 					submesh->AddVertex( vertex ); // Vert added
 				}
 			}
-			mesh->AddSubmesh( submesh );
+			AddSubmesh( submesh );
 		}
-		return mesh;
 	}
-	return nullptr;
 }

@@ -21,7 +21,8 @@ public:
 
 	void Render() { for ( uint32 i = 0; i < submeshes.Size(); i++ ) submeshes[i]->Render(); }
 protected:
-	Mesh(const String& filename) : filename( filename ) {}
+	Mesh() {}
+	Mesh(const String& filename);
 	virtual ~Mesh() {}
 private:
 	String filename;

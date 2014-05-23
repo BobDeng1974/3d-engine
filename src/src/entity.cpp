@@ -20,11 +20,9 @@ void Entity::Move( const Vector3& speed )
 
 void Entity::Render()
 {
-	RotAxis& rotaxis = rotation.Axis();
-	Matrix4 matrix;
-	matrix.SetIdentity();
-	matrix.Translate( position );
-	matrix.Rotate( rotaxis );
-	matrix.Scale( scale );
-	Scene::Instance()->SetModel( matrix );
+	Matrix4 modelMatrix;
+	modelMatrix.Translate( position );
+	modelMatrix.Rotate(  rotation.Axis() );
+	modelMatrix.Scale( scale );
+	Scene::Instance()->SetModel( modelMatrix );
 }

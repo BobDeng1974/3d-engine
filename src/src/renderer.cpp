@@ -11,21 +11,27 @@ Ptr<Renderer> Renderer::instance = nullptr;
 Renderer::Renderer() {
 	uint32 vertexShaderID = CreateVertexShader( String::Read( "../data/vertex.glsl" ) );
 	uint32 fragmentShaderID = CreateFragmentShader( String::Read( "../data/fragment.glsl" ) );
-	if ( vertexShaderID == 0 || fragmentShaderID == 0 )
+	if ( vertexShaderID && fragmentShaderID )
 	{
-		// Shaders doesn´t build correctly
+		uint32 programID = CreateProgram();
+		AttachShader( programID, vertexShaderID );
+		AttachShader( programID, fragmentShaderID );
+		if ( LinkProgram( programID ) )
+		{
+			defaultProgram = programID;
+			UseProgram( programID );
+		}
+		else
+		{
+			// Program couldn´t build
+		}
+		FreeShader( vertexShaderID );
+		FreeShader( fragmentShaderID );
 	}
-	uint32 programID = CreateProgram();
-	AttachShader( programID, vertexShaderID );
-	AttachShader( programID, fragmentShaderID );
-	if ( !LinkProgram( programID ) )
+	else
 	{
-		// Program couldn´t build
+		// Shaders don´t build correctly
 	}
-	FreeShader( vertexShaderID );
-	FreeShader( fragmentShaderID );
-	defaultProgram = programID;
-	UseProgram( programID );
 }
 
 void Renderer::Setup3D() {
@@ -38,7 +44,7 @@ void Renderer::Setup3D() {
 void Renderer::SetMVP(const float* m) {
 	//glMatrixMode(GL_PROJECTION);
 	//glLoadMatrixf(m);
-	glUniformMatrix4fv( mvpLoc, 1, false, m );
+	glUniformMatrix4fv( mvpLoc, 1, GL_FALSE, m );
 }
 
 void Renderer::SetViewport(int x, int y, int w, int h) {
@@ -131,8 +137,8 @@ void Renderer::DrawBuffer(uint32 numIndices, int coordsOffset, int texCoordsOffs
 	glTexCoordPointer(2, GL_FLOAT, stride, (const void*)texCoordsOffset);*/
 	if ( vposLoc != -1 ) glEnableVertexAttribArray( vposLoc );
 	if ( vtexLoc != -1 ) glEnableVertexAttribArray( vtexLoc );
-	glVertexAttribPointer( vposLoc, 3, GL_FLOAT, true, stride, (const void*) coordsOffset );
-	glVertexAttribPointer( vtexLoc, 2, GL_FLOAT, true, stride, (const void*) texCoordsOffset );
+	glVertexAttribPointer( vposLoc, 3, GL_FLOAT, GL_FALSE, stride, (const void*) coordsOffset );
+	glVertexAttribPointer( vtexLoc, 2, GL_FLOAT, GL_FALSE, stride, (const void*) texCoordsOffset );
 	glDrawElements(GL_TRIANGLES, numIndices, GL_UNSIGNED_SHORT, 0);
 }
 
@@ -209,12 +215,13 @@ bool Renderer::LinkProgram(uint32 program) {
 }
 
 void Renderer::UseProgram(uint32 program) {
-	glUseProgram( (program == 0) ? defaultProgram : program );
+	glUseProgram( (program) ? program : defaultProgram );
 	// Location forced by use layout(...) in shader
 	mvpLoc = glGetUniformLocation( program, "MVP" );
+	texSamplerLoc = glGetUniformLocation( program, "texSampler" );
 	vposLoc = glGetAttribLocation( program, "vpos" );
 	vtexLoc = glGetAttribLocation( program, "vuv" );
-	texSamplerLoc = 0;
+
 	glUniform1i( texSamplerLoc, 0 );
 	// Check found
 	if ( mvpLoc == -1 || vposLoc == -1 || vtexLoc == -1 )

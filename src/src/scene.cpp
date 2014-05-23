@@ -33,11 +33,8 @@ void Scene::SetModel( const Matrix4& m )
 {
 	modelMatrix = m;
 
-	Matrix4 MVP;
-	MVP.SetIdentity();
-	MVP = m * currentCamera->GetView() * currentCamera->GetProjection();
-	float *fpMVP = &MVP[0];
-	Renderer::Instance()->SetMVP( fpMVP );
+	Matrix4 MVP = currentCamera->GetProjection() * currentCamera->GetView() * modelMatrix;
+	Renderer::Instance()->SetMVP( &MVP[0] );
 }
 
 void Scene::AddEntity( Ptr<Entity> entity )

@@ -1,15 +1,15 @@
 #include "../include/camera.h"
 #include "../include/renderer.h"
+#include "../include/screen.h"
 
 Camera::Camera()
 {
-	SetColor( 0.f, 0.f, 0.f );
-	SetUsesTarget( false );
-	SetViewport( 0, 0, 0, 0 );
-	SetFrustum( 0.f, 0.f, 0.f, 0.f, 0.f, 0.f );
-	SetTarget( Vector3( 0.f, 0.f, 0.f ) );
-	projMatrix.SetIdentity();
-	viewMatrix.SetIdentity();
+	color[0] = 0.f; color[1] = 0.f; color[2] = 0.f;
+	usesTarget = false;
+	vx = 0; vy = 0;
+	vw = Screen::Instance()->GetWidth();
+	vh = Screen::Instance()->GetHeight();
+	target = Vector3( 0.f, 0.f, 0.f );
 }
 
 void Camera::SetOrtho(float left, float right, float bottom, float top, float near, float far)
@@ -36,10 +36,10 @@ void Camera::Prepare()
 	}
 	else
 	{
-		lookAtTarget = GetRotation() * Vector3( 0.f, 0.f, -1.f );
+		lookAtTarget = GetPosition() - Vector3( 0.f, 0.f, -1.f );
 	}
-	viewMatrix.LookAt( viewMatrix.Translation(), lookAtTarget, Vector3( 0.f, 1.f, 0.f ) );
+	viewMatrix.LookAt( GetPosition(), lookAtTarget, Vector3( 0.f, 1.f, 0.f ) );
 	Renderer::Instance()->SetViewport( vx, vy, vw, vh );
-	Renderer::Instance()->ClearDepthBuffer();
 	Renderer::Instance()->ClearColorBuffer( color[0], color[1], color[2] );
+	Renderer::Instance()->ClearDepthBuffer();
 }
