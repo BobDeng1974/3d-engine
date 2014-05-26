@@ -9,8 +9,8 @@ extern "C" uint8 *stbi_load(char const *filename, int *x, int *y, int *comp, int
 Ptr<Renderer> Renderer::instance = nullptr;
 
 Renderer::Renderer() {
-	uint32 vertexShaderID = CreateVertexShader( String::Read( "../data/vertex.glsl" ) );
-	uint32 fragmentShaderID = CreateFragmentShader( String::Read( "../data/fragment.glsl" ) );
+	uint32 vertexShaderID = CreateVertexShader( String::Read( "data/vertex.glsl" ) );
+	uint32 fragmentShaderID = CreateFragmentShader( String::Read( "data/fragment.glsl" ) );
 	if ( vertexShaderID && fragmentShaderID )
 	{
 		uint32 programID = CreateProgram();

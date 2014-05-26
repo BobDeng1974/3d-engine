@@ -8,8 +8,6 @@ Ptr<Entity> Entity::Create()
 
 Entity::Entity()
 {
-	position = Vector3( 0.f, 0.f, 0.f );
-	rotation = Quat( 0.f, 0.f, 0.f, 0.f );
 	scale = Vector3( 1.f, 1.f, 1.f );
 }
 

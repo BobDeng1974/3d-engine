@@ -19,6 +19,7 @@ Mesh::Mesh( const String& filename )
 {
 	// FIXME: Error checks left
 
+	this->filename = filename;
 	// Parse JSON file
 	rapidjson::Document doc;
 	doc.Parse<0>( String::Read( filename ).ToCString() );
@@ -30,7 +31,7 @@ Mesh::Mesh( const String& filename )
 		{
 			// Create submesh
 			String texFilename = docSubmeshes[i]["texture"].GetString();
-			Ptr<Texture> texture = ResourceManager::Instance()->LoadTexture( "data/" + texFilename );
+			Ptr<Texture> texture = ResourceManager::Instance()->LoadTexture( filename.ExtractDir() + "/" + texFilename );
 			Ptr<Submesh> submesh = Submesh::Create( texture );
 			// Add indices
 			const rapidjson::Value& indices = docSubmeshes[i]["indices"];
@@ -39,7 +40,7 @@ Mesh::Mesh( const String& filename )
 				for ( uint32 j = 0; j < indices.Size(); j+=3 ) // Loop through each index
 				{
 					submesh->AddTriangle( indices[j].GetInt(), indices[j+1].GetInt(), indices[j+2].GetInt() ); // Tri added
-				} 
+				}
 			}
 			// Add vertex
 			std::vector<Vertex> vertices;
@@ -51,8 +52,8 @@ Mesh::Mesh( const String& filename )
 				{
 					Vertex vertex;
 					Vector3 poscoord(	(float) poscoords[z].GetDouble(), 
-						(float) poscoords[z+1].GetDouble(), 
-						(float) poscoords[z+2].GetDouble() );
+										(float) poscoords[z+1].GetDouble(), 
+										(float) poscoords[z+2].GetDouble() );
 					vertex.position = poscoord;
 					vertices.push_back( vertex );
 				} 

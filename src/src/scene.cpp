@@ -35,7 +35,8 @@ void Scene::SetModel( const Matrix4& m )
 
 	Matrix4 proj = currentCamera->GetProjection();
 	Matrix4 view = currentCamera->GetView();
-	Matrix4 MVP = currentCamera->GetProjection() * currentCamera->GetView() * modelMatrix;
+	view[13] = -0.000000f; // HACK:
+	Matrix4 MVP = currentCamera->GetProjection() * view * modelMatrix;
 	Renderer::Instance()->SetMVP( &MVP[0] );
 }
 
