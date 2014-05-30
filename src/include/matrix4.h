@@ -111,13 +111,13 @@ public:
 		m[ 9] = y*z*(1-c)-x*s;
 		m[10] = z*z*(1-c)+c;*/
 		m[ 0] = x*x*(1-c)+c;
-		m[ 4] = x*y*(1-c)-x*s;
-		m[ 8] = x*z*(1-c)+y*s;
-		m[ 1] = x*y*(1-c)+z*s;
-		m[ 5] = y*y*(1-c)+x*s;
-		m[ 9] = y*z*(1-c)-x*s;
-		m[ 2] = x*z*(1-c)-y*s;
-		m[ 6] = y*z*(1-c)+x*s;
+		m[ 4] = x*y*(1-c)-(z*s);
+		m[ 8] = x*z*(1-c)+(y*s);
+		m[ 1] = x*y*(1-c)+(z*s);
+		m[ 5] = y*y*(1-c)+c;
+		m[ 9] = y*z*(1-c)-(x*s);
+		m[ 2] = x*z*(1-c)-(y*s);
+		m[ 6] = y*z*(1-c)+(x*s);
 		m[10] = z*z*(1-c)+c;
 	}
 	void SetScale(const Vector3& scale) { m[0]=scale.X(); m[5]=scale.Y(); m[10]=scale.Z(); }
